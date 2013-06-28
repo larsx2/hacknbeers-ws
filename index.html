@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+    <script src="./client.js"></script>
+    <link rel="stylesheet" type="text/css" href="app.css" />
+    </head>
+    <body lang="en">
+
+    <h1><span class="matrix">WebSocket</span> Client</h1>
+    <div id="first" class="box">
+      <div></div>
+      <form><input placeholder=" insert command ..." autocomplete="off"></input></form>
+    </div>
+
+    <script>
+      function trim(string) { return string.replace(/^\s*|\s*$/g, '') } 
+      function createSock(route) {
+        sock = new SockJS(route);
+        sock.onopen    = Client.onOpen;
+        sock.onmessage = Client.onMessage;
+        sock.onclose   = Client.onClose;
+
+        if (sock) {
+          Client.print("[*] Connected to route: " +route);
+        }
+
+        return sock;
+      } 
+
+      var form = $('#first form');
+      var inp  = $('#first input');
+
+      var sock = createSock("/chat")
+
+      form.submit(function() {
+        var cmd = inp.val();
+        
+        if (cmd.match("route:")) {
+          var args = cmd.split(":");
+          var route = trim(args[args.length - 1]);
+
+          Client.print("[!!] Changing to route "+route);
+          createSock(route);
+        } 
+        else if (cmd.match("connect:")) {
+          var args = cmd.split(":");
+          var route = trim(args[args.length - 1]);
+
+          Client.print("[**] Reconnecting to " +route);
+          sock = createSock(route);
+        }
+        else if (cmd.match("clear")) {
+          Client.clear();
+        }
+        else {
+          if (!sock) {
+            Client.print("[!!] WebSocket connection is dead. Try with 'connect: /<route>'");
+          }   
+          sock.send(cmd);
+          Client.print(Client.nick +": "+ cmd);
+        }
+
+        inp.val('');
+
+        return false;
+      });
+    </script>
+  </body>
+</html>

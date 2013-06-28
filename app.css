@@ -1,0 +1,39 @@
+.box {
+  width: 50%;
+  margin: auto;
+  color: #00CC00;
+}
+
+.matrix {
+  color: #00CC00;
+}
+
+.box div, .box input {
+  border: 1px solid;
+-moz-border-radius: 4px;
+  border-radius: 4px;
+  width: 100%;
+  padding: 0px;
+  margin: 5px;
+}
+
+.box div {
+  border-color: grey;
+  height: 200px;
+  overflow: auto;
+}
+
+.box input {
+  height: 30px;
+}
+
+h1 {
+  margin-left: 30px;
+  text-align: center;
+}
+
+body {
+  background-color: black;
+  font-family: "Droid Sans Mono", "Courier New", monospace;
+  color: #aaa;
+}
